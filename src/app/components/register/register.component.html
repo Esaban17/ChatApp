@@ -1,0 +1,74 @@
+<swal #successSwal title="Éxito" text="Registrado Correctamente" icon="success">
+</swal>
+
+<swal #errorSwal title="Error" text="Registro Fallido" icon="error">
+</swal>
+
+<div class="main-layout card-bg-1">
+    <div class="container d-flex flex-column">
+        <div class="row no-gutters text-center align-items-center justify-content-center min-vh-100">
+            <div class="col-12 col-md-6 col-lg-5 col-xl-4">
+                <h1 class="font-weight-bold">Registrarse</h1>
+                <p class="text-dark mb-3">Somos diferentes, te hacemos diferente.</p>
+                <form [formGroup]='registerForm' class="mb-3" (ngSubmit)="register()">
+                    <div class="form-group">
+                        <label for="firstName" class="sr-only">First Name</label>
+                        <input formControlName="firstName" type="text" class="form-control form-control-md" id="firstName" placeholder="Nombre" autocomplete="off">
+                        <p class="text-danger" *ngIf="registerForm.controls['firstName'].errors?.required && submitted">
+                            <span class="fa fa-exclamation-triangle"></span>
+                            First name is required
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName" class="sr-only">Last Name</label>
+                        <input formControlName="lastName" type="text" class="form-control form-control-md" id="lastName" placeholder="Apellido" autocomplete="off">
+                        <p class="text-danger" *ngIf="registerForm.controls['lastName'].errors?.required && submitted">
+                            <span class="fa fa-exclamation-triangle"></span>
+                            Last name is required
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="username" class="sr-only">Username</label>
+                        <input formControlName="username" type="text" class="form-control form-control-md" id="username" placeholder="Usuario" autocomplete="off">
+                        <p class="text-danger" *ngIf="registerForm.controls['username'].errors?.required && submitted">
+                            <span class="fa fa-exclamation-triangle"></span>
+                            Username is required
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="sr-only">Email Address</label>
+                        <input formControlName="email" type="email" class="form-control form-control-md" id="email" placeholder="Email" autocomplete="off">
+                        <p class="text-danger" *ngIf="registerForm.controls['email'].errors?.required && submitted">
+                            <span class="fa fa-exclamation-triangle"></span>
+                            Email is required
+                          </p>
+                          <p class="text-warning"
+                            *ngIf="registerForm.controls['email'].errors?.email && (registerForm.controls['email'].dirty || registerForm.controls['email'].touched)">
+                            <span class="fa fa-exclamation-triangle"></span>
+                            Enter a valid email address
+                          </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="sr-only">Password</label>
+                        <input formControlName="password" type="password" class="form-control form-control-md" id="password" placeholder="Password" autocomplete="off">
+                        <p class="text-danger" *ngIf="registerForm.controls['password'].errors?.required && submitted">
+                            <span class="fa fa-exclamation-triangle"></span>
+                            Password is required
+                          </p>
+                          <p class="text-warning"
+                            *ngIf="registerForm.controls['password'].errors?.minlength && (registerForm.controls['password'].dirty || registerForm.controls['password'].touched)">
+                            your password must have 8 characters
+                            <span class="fa fa-exclamation-triangle"></span>
+                          </p>
+                    </div>
+                    <button [disabled]="loading" type="submit" class="btn btn-primary btn-lg btn-block text-uppercase font-weight-semibold" >
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                        Registrarte
+                    </button>
+                </form>
+
+                <p style="color: white !important;">Ya tienes una cuenta? <a class="font-weight-semibold" style="color: #665dfe !important; cursor: pointer;" routerLink="/login">Iniciar Sesión</a>.</p>
+            </div>
+        </div> 
+    </div>
+</div>

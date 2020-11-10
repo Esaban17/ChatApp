@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "ChatApp"
+    }
+  },
+  "defaultProject": "ChatApp",
+  "cli": {
+    "analytics": false
+  }
 }
