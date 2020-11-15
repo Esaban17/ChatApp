@@ -19,6 +19,7 @@ import { UsersComponent } from './components/users/users.component';
 
 //LIBRARy
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { DemoComponent } from './components/demo/demo.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     RegisterComponent,
     ProfileComponent,
     ChatComponent,
-    UsersComponent
+    UsersComponent,
+    DemoComponent
   ],
   imports: [
     BrowserModule,

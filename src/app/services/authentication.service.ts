@@ -24,23 +24,15 @@ export class AuthenticationService {
 
   async login(data:any){
 
-    const user:any = await this.http.post(`${environment.apiUrl}/user/login`, data).toPromise(); 
-    
-    if(user.username && user.password){
-      localStorage.setItem('admin', JSON.stringify(user.result));
-      this.userSubject.next(user.result);
+    const res:any = await this.http.post(`${environment.apiUrl}/user/login`, data).toPromise(); 
+
+    if(res.user != null){
+      if(res.user.username && res.user.password){
+        localStorage.setItem('user', JSON.stringify(res.user));
+        this.userSubject.next(res.user);
+      }
     }
-    return user;
-    
-    // return this.http.post(`${environment.apiUrl}/administrator/authenticate`, data).pipe(map(admin => {
-    //   // login successful if there's a jwt token in the response
-    //   if(admin && admin.token) {
-    //     // store admin details and jwt token in local storage to keep user logged in between page refreshes
-    //     localStorage.setItem('currentAdmin', JSON.stringify(admin));
-    //     this.currentAdminSubject.next(admin);
-    //   }
-    //   return admin;
-    // }));
+    return res.user;
   }
 
   logout(){

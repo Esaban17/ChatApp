@@ -19,96 +19,49 @@
                     <!-- Sidebar Search Start -->
                     <form class="form-inline">
                         <div class="input-group">
-                            <input type="text" class="form-control search border-right-0 transparent-bg pr-0"
-                                placeholder="Buscar usuarios">
-                            <div class="input-group-append">
-                                <div class="input-group-text transparent-bg border-left-0" role="button">
-                                    <!-- Default :: Inline SVG -->
-                                    <svg class="text-muted hw-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-
-                                    <!-- Alternate :: External File link -->
-                                    <!-- <img class="injectable hw-20" src="./../assets/media/heroicons/outline/search.svg" alt=""> -->
-                                </div>
-                            </div>
+                            <input [(ngModel)]="searched" [ngModelOptions]="{standalone: true}"  type="text" class="form-control search border-right-0 transparent-bg pr-0"
+                                placeholder="Buscar usuarios" (keyup)="searchUsers()">
                         </div>
                     </form>
-                    <!-- <button class="btn btn-primary" style="float: left !important;">
-                        Agregar
-                        <svg class="hw-24" fill="none" viewBox="0 0 28 28" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </button> -->
                 </div>
                 <!-- Sidebar Header End -->
             </div>
             <!-- Chat Header End -->
 
             <!-- Friends Contact List Start -->
-            <ul class="contacts-list" id="friendsTab" data-friends-list="">
-                <!-- Item Series Start -->
-                <li>
-                    <small class="font-weight-medium text-uppercase text-muted">A</small>
-                </li>
-                <!-- Item Series End -->
-
-                <!-- friends Item Start -->
-                <li class="contacts-item active">
-                    <a class="contacts-link" href="#">
+            <ul class="contacts-list" id="friendsTab">
+                <li class="contacts-item" *ngFor="let item of filterUsers">
+                    <a class="contacts-link">
                         <div class="avatar">
                             <img src="./../assets/media/avatar/3.png" alt="">
                         </div>
                         <div class="contacts-content">
                             <div class="contacts-info">
-                                <h6 class="chat-name text-truncate">Albert K. Johansen</h6>
+                                <h6 class="chat-name text-truncate">{{item.firstName}} {{item.lastName}} - {{item.username}}</h6>
                             </div>
                             <div class="contacts-texts">
-                                <!-- Default :: Inline SVG -->
                                 <svg class="hw-16 text-muted mr-1" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd"
                                         d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
                                         clip-rule="evenodd" />
                                 </svg>
-
-                                <!-- Alternate :: External File link -->
-                                <!-- <img class="injectable hw-16 text-muted mr-1" src="./../assets/media/heroicons/solid/location-marker.svg" alt=""> -->
-                                <p class="text-muted mb-0">San Fransisco, CA</p>
+                                <p class="text-muted mb-0">Guatemala, GT</p>
                             </div>
                         </div>
+                        <button class="btn btn-primary" *ngIf="item.username != userLogged.username" (click)="addFriend(item)">
+                            Agregar
+                            <svg class="hw-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-primary" *ngIf="item.username == userLogged.username" routerLink="/profile">
+                            Ver perfil
+                            <svg class="hw-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </button>
                     </a>
                 </li>
-                <!-- friends Item End -->
-
-                <!-- friends Item Start -->
-                <li class="contacts-item">
-                    <a class="contacts-link" href="#">
-                        <div class="avatar">
-                            <img src="./../assets/media/avatar/3.png" alt="">
-                        </div>
-                        <div class="contacts-content">
-                            <div class="contacts-info">
-                                <h6 class="chat-name text-truncate">Alice R. Botello</h6>
-                            </div>
-                            <div class="contacts-texts">
-                                <!-- Default :: Inline SVG -->
-                                <svg class="hw-16 text-muted mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                        clip-rule="evenodd" />
-                                </svg>
-
-                                <!-- Alternate :: External File link -->
-                                <!-- <img class="injectable hw-16 text-muted mr-1" src="./../assets/media/heroicons/solid/location-marker.svg" alt=""> -->
-                                <p class="text-muted mb-0">Brentwood, NY</p>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <!-- friends Item End -->
-
             </ul>
             <!-- Friends Contact List End -->
         </div>

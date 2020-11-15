@@ -9,22 +9,20 @@ import { User } from '../models/user';
 export class UserService {
 
   url = environment.apiUrl;
-
   headers = new HttpHeaders();
 
   constructor(private http: HttpClient) { }
 
-  getUser(idUser: string){
-    return this.http.get<User>(this.url + '/user/' + idUser, { headers: this.setHeaders() }).toPromise();
+  async getUser(idUser: string){
+    return await this.http.get<User>(this.url + '/user/' + idUser, { headers: this.setHeaders() }).toPromise();
   }
 
-  getUsers(){
-    return this.http.get<User[]>(this.url + '/user', { headers: this.setHeaders() }).toPromise();
+  async getUsers(){
+    return await this.http.get<User[]>(this.url + '/user', { headers: this.setHeaders() }).toPromise();
   }
 
-  register(data:any) {
-    console.log(data);
-    return this.http.post(this.url + '/user', data, { headers: this.setHeaders() }).toPromise();
+  async register(data:any) {
+    return await this.http.post(this.url + '/user', data, { headers: this.setHeaders() }).toPromise();
   }
 
   setHeaders() {

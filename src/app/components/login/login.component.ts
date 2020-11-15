@@ -1,5 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { User } from 'src/app/models/user';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -8,30 +12,58 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 })
 export class LoginComponent implements OnInit {
   @ViewChild('successSwal') private successSwal: SwalComponent;
-  @ViewChild('errorEmail') private errorEmail: SwalComponent;
-  @ViewChild('errorPassword') private errorPassword: SwalComponent;
+  @ViewChild('errorSwal') private errorSwal: SwalComponent;
 
-  constructor() { 
-    this.loadScript('assets/vendors/jquery/jquery-3.5.0.min.js');
-    this.loadScript('assets/vendors/bootstrap/bootstrap.bundle.min.js');
-    this.loadScript('assets/vendors/magnific-popup/jquery.magnific-popup.min.js');
-    this.loadScript('assets/vendors/svg-inject/svg-inject.min.js');
-    this.loadScript('assets/vendors/modal-stepes/modal-steps.min.js');
-    this.loadScript('assets/vendors/emojione/emojionearea.min.js');
-    this.loadScript('assets/js/app.js');
+  loginForm: FormGroup;
+  loading = false;
+  submitted = false;
+  returnUrl: string;
+
+  constructor(
+    private formBuilder:FormBuilder,
+    private route: ActivatedRoute,
+    private router:Router,
+    private authenticationService:AuthenticationService
+  ) { 
+    // redirect to home if already logged in
+    if (this.authenticationService.userValue) { 
+      this.router.navigate(['/chat']);
+    }
   }
 
   ngOnInit(): void {
+    this.loginForm = this.formBuilder.group({
+      username: ['',Validators.required],
+      password: ['',Validators.required]
+    });  
+      
+    // get return url from route parameters or default to '/'
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  public loadScript(url: string) {
-    const body = document.body as HTMLInputElement;
-    const script = document.createElement('script');
-    script.innerHTML = '';
-    script.src = url;
-    script.async = false;
-    script.defer = true;
-    body.appendChild(script);
+  login(){
+    this.submitted = true
+
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
+    this.authenticationService.login(this.loginForm.value).then((res:any) => {
+      if(res != null){
+        this.submitted = false;
+        this.loading = false;
+        this.loginForm.reset();
+        this.router.navigate(['chat']);
+        this.successSwal.fire();
+      }else {
+        this.submitted = false;
+        this.loading = false;
+        this.loginForm.reset();
+        this.errorSwal.fire();
+      }
+    });
   }
 
 }

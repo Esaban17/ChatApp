@@ -16,7 +16,10 @@ export class RegisterComponent implements OnInit {
   submitted = false;
   loading = false;
 
-  constructor(private formBuilder:FormBuilder, private userService:UserService) { }
+  constructor(
+    private formBuilder:FormBuilder,
+    private userService:UserService
+  ) { }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({

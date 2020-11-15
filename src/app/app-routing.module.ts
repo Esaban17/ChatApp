@@ -6,13 +6,15 @@ import { ChatComponent } from './components/chat/chat.component';
 import { LoginGuard } from './guards/login.guard';
 import { ProfileComponent } from './components/profile/profile.component';
 import { UsersComponent } from './components/users/users.component';
+import { DemoComponent } from './components/demo/demo.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'demo', component: DemoComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'chat', component: ChatComponent},
-  { path: 'profile', component: ProfileComponent},
-  { path: 'users', component: UsersComponent},
+  { path: 'chat', component: ChatComponent, canActivate: [LoginGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [LoginGuard] },
+  { path: 'users', component: UsersComponent, canActivate: [LoginGuard] },
   // { path: 'statistics/:idModule', loadChildren: () => import('./components/statistics/statistics.module').then(mod => mod.StatisticsModule) },
   { path: '**', redirectTo: 'login' }
 ];
