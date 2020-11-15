@@ -29,7 +29,7 @@ export class ChatService {
 
   public createConnection(){
     this.connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://c7038007df6d.ngrok.io/socket")
+    .withUrl("http://89328b520284.ngrok.io/socket")
     .configureLogging(signalR.LogLevel.Information)
     .build();
   }
