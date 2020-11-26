@@ -1,7 +1,7 @@
 import { environment } from './../../environments/environment';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';          // import signalR
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { ChatModel } from '../models/message';
 
@@ -19,17 +19,11 @@ export class ChatService {
   url = environment.apiUrl;
 
   constructor(private http: HttpClient) { 
-    // this.connection.onclose(async () => {
-    //   await this.start();
-    // });
-    // this.connection.on("sendToAll", (sender:string, receiver:string, message:string) => { this.getLastMessage(sender, receiver, message); });
-    // this.connection.on("sendPrivate", (sender:string, receiver:string, message:string) => { this.getLastMessage(sender, receiver, message); });
-    // this.start(); 
   }
 
   public createConnection(){
     this.connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://3a106353a6ed.ngrok.io/socket")
+    .withUrl("https://localhost:44363/socket")
     .configureLogging(signalR.LogLevel.Information)
     .build();
   }
@@ -37,8 +31,12 @@ export class ChatService {
   // Strart the connection
   public async start() {
     try {
-      this.connection.on("sendToAll", (sender:string, receiver:string, message:string) => { this.getLastMessage(sender, receiver, message); });
-      this.connection.on("sendPrivate", (sender:string, receiver:string, message:string) => { this.getLastMessage(sender, receiver, message); });
+      this.connection.on("sendPrivate", (id:string,sender:string,receiver:string,message:string,date:string,isFile:boolean,fileName:string) => { 
+        this.getLastMessage(id,sender, receiver, message,date,isFile,fileName); 
+      });
+      this.connection.on("sendFile", (id:string,sender:string, receiver:string, message:string,date:string,isFile:boolean,fileName:string) => { 
+        this.getLastMessage(id,sender, receiver, message,date,isFile,fileName); 
+      });
 
       await this.connection.start();
       console.log("connected");
@@ -56,27 +54,41 @@ export class ChatService {
     });
   }
 
-  public getLastMessage(sender: string, receiver: string, message:string): void {
+  public getLastMessage(id:string, sender: string, receiver: string, message:string,date:string,isFile:boolean, fileName:string): void {
+    this.receivedMessageObject.id = id;
     this.receivedMessageObject.sender = sender;
     this.receivedMessageObject.receiver = receiver;
     this.receivedMessageObject.message = message;
+    this.receivedMessageObject.date = date;
+    this.receivedMessageObject.isFile = isFile;
+    this.receivedMessageObject.fileName = fileName;
     this.sharedObj.next(this.receivedMessageObject);
   }
 
-  public sendToAll(data: any) {
-    return this.http.post(this.url + "/chat/send/all", data, { headers: this.setHeaders() } ).toPromise();
+  public sendPrivate(data:any,senderCode:number){
+    return this.http.post(`${this.url}/chat/send/private/${senderCode}`, data, { headers: this.setHeaders() } ).toPromise();
   }
 
-  public sendPrivate(data: any){
-    return this.http.post(this.url + "/chat/send/private", data, { headers: this.setHeaders() } ).toPromise();
+  async sendFile(data:ChatModel,senderCode:number,file:any){
+    let formData = new FormData();
+    formData.append('chat', JSON.stringify(data));
+    formData.append('file', file);
+    formData.append('senderCode', senderCode.toString())
+    return await this.http.post(`${this.url}/chat/send/private/file`, formData).toPromise();
   }
 
   public getMessages(): Observable<ChatModel> {
     return this.sharedObj.asObservable();
   }
 
-  async getCurrentMessages(sender:string,receiver:string){
-    return await this.http.get<ChatModel[]>(`${this.url}/chat/${sender}/${receiver}` , { headers: this.setHeaders() }).toPromise();
+  async getCurrentMessages(sender:string,receiver:string, senderCode:number){
+    return await this.http.get<ChatModel[]>(`${this.url}/chat/${sender}/${receiver}/?senderCode=${senderCode}`, { headers: this.setHeaders() }).toPromise();
+  }
+
+  downloadFile(id:string, senderCode:number): Observable<Blob>{
+    return this.http.get(`${this.url}/chat/${id}/download/?senderCode=${senderCode}`, {
+      responseType: 'blob'
+    });
   }
   
   setHeaders() {

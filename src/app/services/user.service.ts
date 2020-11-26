@@ -13,8 +13,12 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  async getUser(idUser: string){
-    return await this.http.get<User>(this.url + '/user/' + idUser, { headers: this.setHeaders() }).toPromise();
+  async getUserByUsername(username: string){
+    return await this.http.get<User>(this.url + '/user/username/' + username, { headers: this.setHeaders() }).toPromise();
+  }
+
+  async getUserById(id: string){
+    return await this.http.get<User>(this.url + '/user/' + id, { headers: this.setHeaders() }).toPromise();
   }
 
   async getUsers(){
@@ -23,6 +27,12 @@ export class UserService {
 
   async register(data:any) {
     return await this.http.post(this.url + '/user', data, { headers: this.setHeaders() }).toPromise();
+  }
+
+  async uploadImage(id:string, file:any){
+    let formData = new FormData();
+    formData.append('file', file);
+    return await this.http.post(this.url + '/user/upload/' + id, formData).toPromise();
   }
 
   setHeaders() {

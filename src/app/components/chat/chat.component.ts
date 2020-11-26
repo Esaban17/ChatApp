@@ -7,6 +7,7 @@ import { Invitation } from 'src/app/models/invitation';
 import { InvitationService } from 'src/app/services/invitation.service';
 import { ChatModel } from '../../models/message';
 import { ChatService } from '../../services/chat.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-chat',
@@ -15,15 +16,17 @@ import { ChatService } from '../../services/chat.service';
 })
 export class ChatComponent implements OnInit {
 
-  friend:string;
   message:string;
+  selectedFile: File = null;
   userLogged:User;
+  friend:User;
   contacts: Contact[] = [];
   invitations: Invitation[] = [];
   chatModel: ChatModel = new ChatModel();
   currentChatMessages: ChatModel[] = [];
   chatSelected:boolean = false;
-  empty: boolean = false;
+  isFile:boolean = false;
+  urlApi = environment.apiUrl;
 
   constructor(
     private contactService: ContactService,
@@ -65,6 +68,8 @@ export class ChatComponent implements OnInit {
       newObj.sender = res.sender;
       newObj.receiver = res.receiver;
       newObj.message = res.message;
+      newObj.isFile = res.isFile;
+      newObj.fileName = res.fileName
       this.currentChatMessages.push(newObj);
     });  
   }
@@ -73,7 +78,7 @@ export class ChatComponent implements OnInit {
     this.currentChatMessages = [];
 
     if(this.friend != null){
-      this.chatService.getCurrentMessages(this.userLogged.username, this.friend).then((res: ChatModel[]) =>{
+      this.chatService.getCurrentMessages(this.userLogged.username, this.friend.username, this.userLogged.code).then((res: ChatModel[]) =>{
         this.currentChatMessages = res;
         this.chatSelected = true;
       });
@@ -113,30 +118,31 @@ export class ChatComponent implements OnInit {
 
   }
 
+  onFileSelected($event:any){
+    this.selectedFile = $event.target.files[0];
+    this.isFile = true;
+    this.message = "Archivo: " + this.selectedFile.name;
+  }
+
   sendPrivate(){
 
     this.chatModel.sender = this.userLogged.username;
-    this.chatModel.receiver = this.friend;
-    this.chatModel.message = this.message;
+    this.chatModel.receiver = this.friend.username;
 
-    this.chatService.sendPrivate(this.chatModel).then((res:any) => {
-      console.log("Mensaje Privado Enviado");
-    });
-  }
-  
-  sendToAll() {
-    
-    this.chatModel.receiver = "All";
-
-    if(this.chatModel) {
-      if(this.chatModel.sender.length == 0 || this.chatModel.sender.length == 0){
-        window.alert("Los campos son requeridos");
-        return;
-      } else {
-        this.chatService.sendToAll(this.chatModel).then((res:any) => {
-          console.log("Mensaje General Enviado");
-        });
-      }
+    if(this.selectedFile != null){
+      this.chatModel.message = "";
+      this.chatModel.isFile = true;
+      this.chatService.sendFile(this.chatModel,this.userLogged.code,this.selectedFile).then((res:any) => {
+        this.message = "";
+        this.selectedFile = null;
+        this.isFile = false;
+      });
+    }else{
+      this.chatModel.message = this.message;
+      this.chatModel.isFile = false;
+      this.chatService.sendPrivate(this.chatModel,this.userLogged.code).then((res:any) => {
+        this.message = "";
+      });
     }
   }
 
@@ -144,9 +150,24 @@ export class ChatComponent implements OnInit {
     this.authenticationService.logout();
   }
 
-  selectChat(username:string){
-    this.friend = username;
+  selectChat(item:User){
+    this.friend = item;
     this.getChatMessages();
+  }
+
+  downloadFile(item:ChatModel){
+    this.chatService.downloadFile(item.id, this.userLogged.code).subscribe(blob => {
+      const a = document.createElement('a');
+      const objectURL = URL.createObjectURL(blob);
+      a.href = objectURL;
+      a.download = item.fileName;
+      a.click();
+      URL.revokeObjectURL(objectURL);
+    });
+  }
+
+  GetImage(username:string){
+    return `${this.urlApi}/user/image/${username}`;
   }
 
   public loadScript(url: string) {
@@ -154,7 +175,7 @@ export class ChatComponent implements OnInit {
     const script = document.createElement('script');
     script.innerHTML = '';
     script.src = url;
-    script.async = true;
+    script.async = false;
     script.defer = true;
     body.appendChild(script);
   }

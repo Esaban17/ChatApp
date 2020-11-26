@@ -1,5 +1,7 @@
+import { User } from './user';
+
 export interface Contact {
     id: string;
     owner: string;
-    friend: string;
+    friend: User;
 }

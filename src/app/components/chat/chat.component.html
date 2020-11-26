@@ -95,7 +95,7 @@
 
                                     <li class="nav-item list-inline-item mr-1">
                                         <a class="nav-link text-muted px-1" href="#" title="Invitations" role="button"
-                                            data-toggle="modal" data-target="#inviteOthers">
+                                            data-toggle="modal" data-target="#inviteOthers" (click)="getInvitations()">
                                             <svg class="hw-24" fill="none" viewBox="0 0 25 25" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -105,7 +105,8 @@
 
                                     <li class="nav-item list-inline-item mr-1">
                                         <a class="nav-link text-muted px-1" href="#" title="Notifications" role="button"
-                                            data-toggle="modal" data-target="#notificationModal">
+                                            data-toggle="modal" data-target="#notificationModal"
+                                            (click)="getInvitations()">
                                             <svg class="hw-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -148,23 +149,15 @@
                         <!-- Chat Contact List Start -->
                         <ul class="contacts-list" id="chatContactTab" data-chat-list="">
                             <!-- Chat Item Start -->
-                            <li class="contacts-item friends" *ngFor="let item of contacts" (click)="selectChat(item.friend)">
+                            <li class="contacts-item friends" *ngFor="let item of contacts"
+                                (click)="selectChat(item.friend)">
                                 <a class="contacts-link">
-                                    <div class="avatar avatar-busy"><img src="./../assets/media/avatar/3.png" alt="">
+                                    <div class="avatar avatar-online"><img [src]="GetImage(item.friend.photo)"
+                                            alt="Image Friend">
                                     </div>
                                     <div class="contacts-content">
                                         <div class="contacts-info">
-                                            <h6 class="chat-name">{{item.friend}}</h6>
-                                            <div class="chat-time"><span>Yesterday</span></div>
-                                        </div>
-                                        <div class="contacts-texts">
-                                            <!-- Default :: Inline SVG -->
-                                            <svg class="hw-20 text-muted" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            <p class="text-truncate">Photo</p>
+                                            <h6 class="chat-name">{{item.friend.username}}</h6>
                                         </div>
                                     </div>
                                 </a>
@@ -201,11 +194,11 @@
                     <!-- Chat participant's Name -->
                     <div class="media chat-name align-items-center text-truncate" *ngIf="chatSelected">
                         <div class="avatar avatar-online d-none d-sm-inline-block mr-3">
-                            <img src="./../assets/media/avatar/2.png" alt="">
+                            <img [src]="GetImage(friend.photo)" alt="Friend Image">
                         </div>
 
                         <div class="media-body align-self-center ">
-                            <h6 class="text-truncate mb-0">{{friend}}</h6>
+                            <h6 class="text-truncate mb-0">{{friend.username}}</h6>
                             <small class="text-muted">Online</small>
                         </div>
                     </div>
@@ -237,38 +230,84 @@
                     <div class="container" *ngIf="chatSelected">
                         <!-- Message Day Start -->
                         <div class="message-day">
-                            <div class="message-divider sticky-top pb-2" data-label="Yesterday">&nbsp;</div>
+                            <div class="message-divider sticky-top pb-2" data-label="Hoy">&nbsp;</div>
                             <ng-container *ngFor="let item of currentChatMessages">
                                 <!-- Received Message Start -->
-                                <div class="message" *ngIf="item.sender != userLogged.username">
+                                <div class="message" *ngIf="item.sender != userLogged.username && !item.isFile">
                                     <div class="message-wrapper">
                                         <div class="message-content">
                                             <span>{{item.message}}</span>
                                         </div>
                                     </div>
                                     <div class="message-options">
-                                        <div class="avatar avatar-sm"><img alt="" src="./../assets/media/avatar/6.png">
+                                        <div class="avatar avatar-sm"><img alt="" [src]="GetImage(friend.photo)">
                                         </div>
-                                        <span class="message-date">9:12am</span>
+                                        <!-- <span class="message-date">9:12am</span> -->
                                     </div>
                                 </div>
                                 <!-- Received Message End -->
-
                                 <!-- Self Message Start -->
-                                <div class="message self" *ngIf="item.sender == userLogged.username">
+                                <div class="message self" *ngIf="item.sender == userLogged.username && !item.isFile">
                                     <div class="message-wrapper">
                                         <div class="message-content">
                                             <span>{{item.message}}</span>
                                         </div>
                                     </div>
                                     <div class="message-options">
-                                        <div class="avatar avatar-sm"><img alt="" src="./../assets/media/avatar/6.png">
+                                        <div class="avatar avatar-sm"><img alt="" [src]="GetImage(userLogged.photo)">
                                         </div>
-
-                                        <span class="message-date">9:12am</span>
+                                        <!-- <span class="message-date">9:12am</span> -->
                                     </div>
                                 </div>
                                 <!-- Self Message End -->
+                                <!-- Message Start -->
+                                <div class="message" *ngIf="item.sender != userLogged.username && item.isFile">
+                                    <div class="message-wrapper">
+                                        <div class="message-content">
+                                            <div class="document">
+                                                <div class="btn btn-primary btn-icon rounded-circle text-light mr-2">
+                                                    <!-- Default :: Inline SVG -->
+                                                    <svg class="hw-24" fill="none" viewBox="0 0 24 24"
+                                                        stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                                <div class="document-body">
+                                                    <h6>
+                                                        <a class="text-reset" (click)="downloadFile(item)">{{item.fileName}}</a>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Message End -->
+                                <!-- Message Start -->
+                                <div class="message self" *ngIf="item.sender == userLogged.username && item.isFile">
+                                    <div class="message-wrapper">
+                                        <div class="message-content">
+                                            <div class="document">
+                                                <div class="btn btn-primary btn-icon rounded-circle text-light mr-2">
+                                                    <!-- Default :: Inline SVG -->
+                                                    <svg class="hw-24" fill="none" viewBox="0 0 24 24"
+                                                        stroke="currentColor" (click)="downloadFile(item)">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                                <div class="document-body">
+                                                    <h6>
+                                                        <a class="text-reset" style="cursor: pointer;" (click)="downloadFile(item)">{{item.fileName}}</a>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Message End -->
                             </ng-container>
                         </div>
                         <!-- Message Day End -->
@@ -282,50 +321,21 @@
                 <!-- Chat Footer Start-->
                 <div class="chat-footer" *ngIf="chatSelected">
                     <div class="attachment">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary btn-icon btn-minimal btn-sm" type="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <svg class="hw-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-
-                                <!-- <img class="injectable hw-20" src="./../assets/media/heroicons/outline/plus-circle.svg" alt=""> -->
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">
-                                    <svg class="hw-20 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <!-- <img class="injectable hw-20 mr-2" src="./../assets/media/heroicons/outline/photograph.svg" alt=""> -->
-                                    <span>Gallery</span>
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <svg class="hw-20 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                    </svg>
-
-                                    <!-- <img class="injectable hw-20 mr-2" src="./../assets/media/heroicons/outline/volume-up.svg" alt=""> -->
-                                    <span>Audio</span>
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <svg class="hw-20 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                    </svg>
-
-                                    <!-- <img class="injectable hw-20 mr-2" src="./../assets/media/heroicons/outline/document.svg" alt=""> -->
-                                    <span>Document</span>
-                                </a>
-                            </div>
-                        </div>
+                        <input type="file" style="display:none" (change)="onFileSelected($event)" #file>
+                        <button class="btn btn-secondary btn-icon btn-minimal btn-sm" type="button"
+                            (click)="file.click()">
+                            <svg class="hw-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <textarea [(ngModel)]="message" class="form-control emojionearea-form-control" id="messageInput" rows="1"
-                        placeholder="Type your message here..."></textarea>
-                    <div class="btn btn-primary btn-icon send-icon rounded-circle text-light mb-1" role="button" (click)="sendPrivate()">
+                    <textarea [(ngModel)]="message" class="form-control emojionearea-form-control" style="resize: none;"
+                        id="messageInput" rows="1" placeholder="Type your message here..."
+                        [disabled]="isFile"></textarea>
+                    <div class="btn btn-primary btn-icon send-icon rounded-circle text-light mb-1" role="button"
+                        (click)="sendPrivate()">
                         <svg class="hw-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M14 5l7 7m0 0l-7 7m7-7H3" />

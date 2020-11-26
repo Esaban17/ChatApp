@@ -32,8 +32,11 @@
             <ul class="contacts-list" id="friendsTab">
                 <li class="contacts-item" *ngFor="let item of filterUsers">
                     <a class="contacts-link">
-                        <div class="avatar">
-                            <img src="./../assets/media/avatar/3.png" alt="">
+                        <div class="avatar" *ngIf="item.photo">
+                            <img [src]="GetImage(item.photo)" alt="Image User">
+                        </div>
+                        <div class="avatar" *ngIf="!item.photo">
+                            <img src="./../assets/media/avatar/1.png" alt="Default Image">
                         </div>
                         <div class="contacts-content">
                             <div class="contacts-info">

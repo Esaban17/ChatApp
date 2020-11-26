@@ -4,6 +4,7 @@ import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { InvitationService } from 'src/app/services/invitation.service';
 import { Invitation } from 'src/app/models/invitation';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-users',
@@ -13,6 +14,7 @@ import { Invitation } from 'src/app/models/invitation';
 })
 export class UsersComponent implements OnInit {
 
+  urlApi = environment.apiUrl;
   userLogged:User;
   users: User[] = [];
   filterUsers: User[] = [];
@@ -61,6 +63,10 @@ export class UsersComponent implements OnInit {
       this.filterUsers = [];
       this.getUsers();
     }
+  }
+
+  public GetImage(photo:string){
+    return `${this.urlApi}/user/image/${photo}`;
   }
 
   async addFriend(friend:User){
