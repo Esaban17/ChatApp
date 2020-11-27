@@ -85,8 +85,8 @@ export class ChatService {
     return await this.http.get<ChatModel[]>(`${this.url}/chat/${sender}/${receiver}/?senderCode=${senderCode}`, { headers: this.setHeaders() }).toPromise();
   }
 
-  downloadFile(id:string, senderCode:number): Observable<Blob>{
-    return this.http.get(`${this.url}/chat/${id}/download/?senderCode=${senderCode}`, {
+  downloadFile(id:string,sender:string,senderCode:number): Observable<Blob>{
+    return this.http.get(`${this.url}/chat/${id}/download/?sender=${sender}&senderCode=${senderCode}`, {
       responseType: 'blob'
     });
   }

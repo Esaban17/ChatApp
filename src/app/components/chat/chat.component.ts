@@ -156,7 +156,7 @@ export class ChatComponent implements OnInit {
   }
 
   downloadFile(item:ChatModel){
-    this.chatService.downloadFile(item.id, this.userLogged.code).subscribe(blob => {
+    this.chatService.downloadFile(item.id, this.userLogged.username, this.userLogged.code).subscribe(blob => {
       const a = document.createElement('a');
       const objectURL = URL.createObjectURL(blob);
       a.href = objectURL;
