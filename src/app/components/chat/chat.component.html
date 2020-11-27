@@ -268,7 +268,7 @@
                                                 <div class="btn btn-primary btn-icon rounded-circle text-light mr-2">
                                                     <!-- Default :: Inline SVG -->
                                                     <svg class="hw-24" fill="none" viewBox="0 0 24 24"
-                                                        stroke="currentColor">
+                                                        stroke="currentColor" (click)="downloadFile(item)">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2"
                                                             d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -276,7 +276,7 @@
                                                 </div>
                                                 <div class="document-body">
                                                     <h6>
-                                                        <a class="text-reset" (click)="downloadFile(item)">{{item.fileName}}</a>
+                                                        <a class="text-reset">{{item.fileName}}</a>
                                                     </h6>
                                                 </div>
                                             </div>
@@ -300,7 +300,7 @@
                                                 </div>
                                                 <div class="document-body">
                                                     <h6>
-                                                        <a class="text-reset" style="cursor: pointer;" (click)="downloadFile(item)">{{item.fileName}}</a>
+                                                        <a class="text-reset">{{item.fileName}}</a>
                                                     </h6>
                                                 </div>
                                             </div>
