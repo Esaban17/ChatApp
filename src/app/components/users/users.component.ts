@@ -48,7 +48,7 @@ export class UsersComponent implements OnInit {
   searchUsers() {
     this.filterUsers = this.users;
     const list: User[] = [];
-    if (this.searched !== '') {
+    if (this.searched !== '' && this.searched !== undefined) {
       for (const element of this.filterUsers) {
         if (element.username.toLocaleLowerCase().indexOf(this.searched.toLocaleLowerCase()) > -1) {
           list.push(element);

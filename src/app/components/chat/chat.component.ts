@@ -16,10 +16,12 @@ import { environment } from 'src/environments/environment';
 })
 export class ChatComponent implements OnInit {
 
+  searched:string;
   message:string;
   selectedFile: File = null;
   userLogged:User;
   friend:User;
+  filterContacts: Contact[] = [];
   contacts: Contact[] = [];
   invitations: Invitation[] = [];
   chatModel: ChatModel = new ChatModel();
@@ -91,6 +93,7 @@ export class ChatComponent implements OnInit {
     let res: Contact[] = await this.contactService.getContacts(this.userLogged.username);
     if(res != null){
       this.contacts = res;
+      this.filterContacts = res;
     }
   }
 
@@ -168,6 +171,26 @@ export class ChatComponent implements OnInit {
 
   GetImage(username:string){
     return `${this.urlApi}/user/image/${username}`;
+  }
+
+  searchContacts() {
+    this.filterContacts = this.contacts;
+    const list: Contact[] = [];
+    if (this.searched !== '' && this.searched !== undefined) {
+      for (const element of this.filterContacts) {
+        if (element.friend.username.toLocaleLowerCase().indexOf(this.searched.toLocaleLowerCase()) > -1) {
+          list.push(element);
+          this.filterContacts = list;
+        }else {
+          if (list.length == 0) {
+            this.filterContacts = [];
+          }
+        }
+      }
+    }else{
+      this.filterContacts = [];
+      this.getContacts();
+    }
   }
 
   public loadScript(url: string) {
