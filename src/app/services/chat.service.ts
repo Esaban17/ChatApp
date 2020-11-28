@@ -23,7 +23,7 @@ export class ChatService {
 
   public createConnection(){
     this.connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://7bad87868489.ngrok.io/socket", {
+    .withUrl("http://85efb37409ae.ngrok.io/socket", {
       skipNegotiation: true,
       transport: signalR.HttpTransportType.WebSockets
     })
